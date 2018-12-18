@@ -2,6 +2,13 @@
 
 Matrix::Matrix(int h, int w): matrix(h, std::vector<double>(w, 0)), height(h), width(w) {}
 
+Matrix::Matrix(const sf::Vector2f& v): matrix(1, std::vector<double>(3)), height(1), width(3)
+{
+    matrix.at(0).at(0) = v.x;
+    matrix.at(0).at(1) = v.y;
+    matrix.at(0).at(2) = 1;
+}
+
 Matrix::Matrix(const std::vector<std::vector<double> >& vec): matrix(vec), height(vec.size()), width(vec[0].size()) {}
 
 Matrix::Matrix(std::vector<std::vector<double> >&& vec): matrix(std::move(vec)), height(matrix.size()), width(matrix[0].size()) {}
@@ -51,7 +58,7 @@ void Matrix::operator*=(const Matrix& mult)     // WARNING: heavy function
     *(this) = *(this) * mult;
 }
 
-Matrix Matrix::operator*(const int x) const     // WARNING: heavy function
+Matrix Matrix::operator*(const double x) const     // WARNING: heavy function
 {
     Matrix result = *(this);
     for(int i = 0; i < result.height; ++i)
@@ -64,13 +71,25 @@ Matrix Matrix::operator*(const int x) const     // WARNING: heavy function
     return result;
 }
 
-void Matrix::operator*=(const int x)
+void Matrix::operator*=(const double x)
 {
     for(auto& v : matrix)
     {
         for(auto& i : v)
         {
             i *= x;
+        }
+    }
+    (*(this)) /= this->at(0, 2);
+}
+
+void Matrix::operator/=(const double x)
+{
+    for(auto& v : matrix)
+    {
+        for(auto& it : v)
+        {
+            it /= x;
         }
     }
 }
@@ -130,4 +149,38 @@ void Matrix::translate(const double x, const double y)
     translation.at(2, 0) = x;
     translation.at(2, 1) = y;
     (*(this)) *= translation;
+}
+
+void Matrix::applyPerspective(const double x, const double y)
+{
+    Matrix perspective(3, 3);
+    perspective.at(0, 0) = 1;
+    perspective.at(1, 1) = 1;
+    perspective.at(2, 2) = 1;
+    perspective.at(0, 2) = x;
+    perspective.at(1, 2) = y;
+    (*(this)) *= perspective;
+    (*(this)) /= this->at(0, 2);
+}
+
+/*void Matrix::applyPerspective(const double x, const double y, const double z)
+{
+    Matrix perspective(4, 4);
+    perspective.at(0, 0) = 1;
+    perspective.at(1, 1) = 1;
+    perspective.at(2, 2) = 1;
+    perspective.at(3, 3) = 1;
+    perspective.at(0, 3) = x;
+    perspective.at(1, 3) = y;
+    perspective.at(2, 3) = z;
+    (*(this)) *= perspective;
+    (*(this)) /= this->at(0, 3);
+}*/
+
+void operator*=(sf::Vector2f& l, const Matrix& r)
+{
+    Matrix newL = Matrix(l);
+    newL *= r;
+    l.x = newL.at(0, 0);
+    l.y = newL.at(0, 1);
 }

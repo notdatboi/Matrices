@@ -1,22 +1,20 @@
 #ifndef SHAPE_WRAPPER_HPP
 #define SHAPE_WRAPPER_HPP
-#include<SFML/Graphics.hpp>
 #include"Matrix.hpp"
 
 class ShapeWrapper
 {
 private:
-    sf::ConvexShape* shape;
-    std::vector<Matrix> coords;
-    Matrix fromVector2f(const sf::Vector2f& v) const;
-    Matrix fromVector2f(const sf::Vector2f&& v) const;
+    std::vector<sf::Vertex> vertices;
 public:
     ShapeWrapper();
-    sf::ConvexShape* getShapePtr();
-    std::vector<Matrix>& getShapeCoordsMatrix();
+    std::vector<sf::Vertex>& getVertices();
+    void draw(sf::RenderTarget& target) const;
     void transform(const Matrix& t);
-    void transformEveryPoint(const std::vector<Matrix>& t);
-    ~ShapeWrapper();
+    void rotate(const double angle);            // in radians
+    void scale(const double x, const double y);
+    void translate(const double x, const double y);
+    void applyPerspective(const double x, const double y);
 };
 
 #endif

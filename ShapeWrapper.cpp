@@ -1,76 +1,67 @@
 #include"ShapeWrapper.hpp"
 
-Matrix ShapeWrapper::fromVector2f(const sf::Vector2f& v) const
+ShapeWrapper::ShapeWrapper(): vertices(4)
 {
-    Matrix res(1, 3);
-    res.at(0, 0) = v.x;
-    res.at(0, 1) = v.y;
-    res.at(0, 2) = 1;
-    return res;
-}
-
-Matrix ShapeWrapper::fromVector2f(const sf::Vector2f&& v) const
-{
-    Matrix res(1, 3);
-    res.at(0, 0) = v.x;
-    res.at(0, 1) = v.y;
-    res.at(0, 2) = 1;
-    return res;
-}
-
-ShapeWrapper::ShapeWrapper(): coords(4, Matrix(1, 3))
-{
-    shape = new sf::ConvexShape(4);
-    shape->setPoint(0, sf::Vector2f(0, 50));
-    coords[0].at(0, 1) = 50;
-    coords[0].at(0, 2) = 1;
-    shape->setPoint(1, sf::Vector2f(100, 50));
-    coords[1].at(0, 0) = 100;
-    coords[1].at(0, 1) = 50;
-    coords[1].at(0, 2) = 1;
-    shape->setPoint(2, sf::Vector2f(100, 0));
-    coords[2].at(0, 0) = 100;
-    coords[2].at(0, 2) = 1;
-    shape->setPoint(3, sf::Vector2f(0, 0));
-    coords[3].at(0, 2) = 1;
-    shape->setFillColor(sf::Color(0, 127, 180));
+    srand(time(0));
+    int posX = rand() % 700 - 400, posY = rand() % 550 - 300;
+    for(auto& x : vertices) x.color = sf::Color(rand() % 128 + 64, rand() % 128 + 64, rand() % 128 + 64);
+    vertices[0].position = sf::Vector2f(posX, posY);
+    vertices[1].position = sf::Vector2f(posX, posY + 50);
+    vertices[2].position = sf::Vector2f(posX + 100, posY + 50);
+    vertices[3].position = sf::Vector2f(posX + 100, posY);
 }
 
 void ShapeWrapper::transform(const Matrix& t)
 {
-    for(auto& x : coords) x *= t;
-    int sz = coords.size();
-    for(int i = 0; i < sz; ++i)
+    for(auto& v : vertices) v.position *= t;
+}
+
+void ShapeWrapper::rotate(const double angle)
+{
+    for(auto& v : vertices)
     {
-        shape->setPoint(i, sf::Vector2f(coords[i].at(0, 0), coords[i].at(0, 1)));
+        Matrix vertex(v.position);
+        vertex.rotate(angle);
+        v.position = sf::Vector2f(vertex.at(0, 0), vertex.at(0, 1));
     }
 }
 
-void ShapeWrapper::transformEveryPoint(const std::vector<Matrix>& t)
+void ShapeWrapper::scale(const double x, const double y)
 {
-    if(t.size() != coords.size()) throw std::logic_error("You are trying to transform incorrect number of points.\n");
-    int sz = t.size();
-    for(int i = 0; i < sz; ++i)
+    for(auto& v : vertices)
     {
-        coords.at(i) *= t.at(i);
-    }
-    for(int i = 0; i < sz; ++i)
-    {
-        shape->setPoint(i, sf::Vector2f(coords[i].at(0, 0), coords[i].at(0, 1)));
+        Matrix vertex(v.position);
+        vertex.scale(x, y);
+        v.position = sf::Vector2f(vertex.at(0, 0), vertex.at(0, 1));
     }
 }
 
-sf::ConvexShape* ShapeWrapper::getShapePtr()
+void ShapeWrapper::translate(const double x, const double y)
 {
-    return shape;
+    for(auto& v : vertices)
+    {
+        Matrix vertex(v.position);
+        vertex.translate(x, y);
+        v.position = sf::Vector2f(vertex.at(0, 0), vertex.at(0, 1));
+    }
 }
 
-std::vector<Matrix>& ShapeWrapper::getShapeCoordsMatrix()
+void ShapeWrapper::applyPerspective(const double x, const double y)
 {
-    return coords;
+    for(auto& v : vertices)
+    {
+        Matrix vertex(v.position);
+        vertex.applyPerspective(x, y);
+        v.position = sf::Vector2f(vertex.at(0, 0), vertex.at(0, 1));
+    }
 }
 
-ShapeWrapper::~ShapeWrapper()
+void ShapeWrapper::draw(sf::RenderTarget& target) const
 {
-    delete shape;
+    target.draw(vertices.data(), vertices.size(), sf::PrimitiveType::TriangleFan);
+}
+
+std::vector<sf::Vertex>& ShapeWrapper::getVertices()
+{
+    return vertices;
 }

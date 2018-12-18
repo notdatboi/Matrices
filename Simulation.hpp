@@ -10,7 +10,7 @@ private:
     const sf::Time frameTime = sf::seconds(1 / fps);
     std::vector<ShapeWrapper*> shapes;
     Matrix transform;
-    void handleEvents(const sf::Event& event);
+    void handleEvents(const sf::Event& event, double frameTime);
     void spawnShape();
     void update(const sf::Time& frameTime);
     void draw();

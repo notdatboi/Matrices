@@ -100,3 +100,34 @@ void Matrix::operator+=(const Matrix& plus)
         }
     }
 }
+
+void Matrix::rotate(const double angle)
+{
+    Matrix rotation(3, 3);
+    rotation.at(2, 2) = 1;
+    rotation.at(0, 0) = cos(angle);
+    rotation.at(1, 1) = rotation.at(0, 0);
+    rotation.at(0, 1) = sin(angle);
+    rotation.at(1, 0) = -rotation.at(0, 1);
+    (*(this)) *= rotation;
+}
+
+void Matrix::scale(const double x, const double y)
+{
+    Matrix s(3, 3);
+    s.at(0, 0) = x;
+    s.at(1, 1) = y;
+    s.at(2, 2) = 1;
+    (*(this)) *= s;
+}
+
+void Matrix::translate(const double x, const double y)
+{
+    Matrix translation(3, 3);
+    translation.at(0, 0) = 1;
+    translation.at(1, 1) = 1;
+    translation.at(2, 2) = 1;
+    translation.at(2, 0) = x;
+    translation.at(2, 1) = y;
+    (*(this)) *= translation;
+}

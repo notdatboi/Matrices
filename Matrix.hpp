@@ -2,6 +2,7 @@
 #define MATRIX_HPP
 #include<vector>
 #include<stdexcept>
+#include<cmath>
 
 class Matrix
 {
@@ -21,6 +22,9 @@ public:
     void operator*=(const int x);
     Matrix operator+(const Matrix& plus) const;
     void operator+=(const Matrix& plus);
+    void rotate(const double angle);            // in radians
+    void scale(const double x, const double y);
+    void translate(const double x, const double y);
 };
 
 #endif

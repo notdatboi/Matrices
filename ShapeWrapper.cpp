@@ -39,10 +39,25 @@ ShapeWrapper::ShapeWrapper(): coords(4, Matrix(1, 3))
 void ShapeWrapper::transform(const Matrix& t)
 {
     for(auto& x : coords) x *= t;
-    shape->setPoint(0, sf::Vector2f(coords[0].at(0, 0), coords[0].at(0, 1)));
-    shape->setPoint(1, sf::Vector2f(coords[1].at(0, 0), coords[1].at(0, 1)));
-    shape->setPoint(2, sf::Vector2f(coords[2].at(0, 0), coords[2].at(0, 1)));
-    shape->setPoint(3, sf::Vector2f(coords[3].at(0, 0), coords[3].at(0, 1)));
+    int sz = coords.size();
+    for(int i = 0; i < sz; ++i)
+    {
+        shape->setPoint(i, sf::Vector2f(coords[i].at(0, 0), coords[i].at(0, 1)));
+    }
+}
+
+void ShapeWrapper::transformEveryPoint(const std::vector<Matrix>& t)
+{
+    if(t.size() != coords.size()) throw std::logic_error("You are trying to transform incorrect number of points.\n");
+    int sz = t.size();
+    for(int i = 0; i < sz; ++i)
+    {
+        coords.at(i) *= t.at(i);
+    }
+    for(int i = 0; i < sz; ++i)
+    {
+        shape->setPoint(i, sf::Vector2f(coords[i].at(0, 0), coords[i].at(0, 1)));
+    }
 }
 
 sf::ConvexShape* ShapeWrapper::getShapePtr()

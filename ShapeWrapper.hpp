@@ -15,6 +15,7 @@ public:
     sf::ConvexShape* getShapePtr();
     std::vector<Matrix>& getShapeCoordsMatrix();
     void transform(const Matrix& t);
+    void transformEveryPoint(const std::vector<Matrix>& t);
     ~ShapeWrapper();
 };
 

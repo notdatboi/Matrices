@@ -11,6 +11,7 @@ private:
     const sf::Time frameTime = sf::seconds(1 / fps);
     std::vector<ShapeWrapper*> shapes;
     Matrix transform;
+    std::vector<sf::Vertex> axes;
     void handleEvents(const sf::Event& event, double frameTime);
     void spawnShape(const double x, const double y);
     void update(const sf::Time& frameTime);

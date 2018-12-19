@@ -2,8 +2,12 @@
 #include<ctime>
 #include<cstdlib>
 
-Simulation::Simulation(): shapes(), transform(3, 3), window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "TEST") 
+Simulation::Simulation(): shapes(), transform(3, 3), window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "TEST"), axes(4, sf::Vertex(sf::Vector2f(0, 0), sf::Color(180, 70, 70))) 
 {
+    axes[0].position = sf::Vector2f(-1000, 0);
+    axes[1].position = sf::Vector2f(1000, 0);
+    axes[2].position = sf::Vector2f(0, -1000);
+    axes[3].position = sf::Vector2f(0, 1000);
     sf::View view = window.getView();
     view.setCenter(0, 0);
     window.setView(view);
@@ -103,6 +107,7 @@ void Simulation::update(const sf::Time& frameTime)
 void Simulation::draw()
 {
     window.clear();
+    window.draw(axes.data(), axes.size(), sf::Lines);
     for(auto x : shapes)
     {
         x->draw(window);

@@ -2,12 +2,15 @@
 #define SHAPE_WRAPPER_HPP
 #include"Matrix.hpp"
 
+const int SCREEN_HEIGHT = 600;
+const int SCREEN_WIDTH = 800;
+
 class ShapeWrapper
 {
 private:
     std::vector<sf::Vertex> vertices;
 public:
-    ShapeWrapper();
+    ShapeWrapper(const double posX = 0, const double posY = 0);
     std::vector<sf::Vertex>& getVertices();
     void draw(sf::RenderTarget& target) const;
     void transform(const Matrix& t);

@@ -1,14 +1,13 @@
 #include"ShapeWrapper.hpp"
 
-ShapeWrapper::ShapeWrapper(): vertices(4)
+ShapeWrapper::ShapeWrapper(const double posX, const double posY): vertices(4)
 {
     srand(time(0));
-    int posX = rand() % 700 - 400, posY = rand() % 550 - 300;
     for(auto& x : vertices) x.color = sf::Color(rand() % 128 + 64, rand() % 128 + 64, rand() % 128 + 64);
-    vertices[0].position = sf::Vector2f(posX, posY);
-    vertices[1].position = sf::Vector2f(posX, posY + 50);
-    vertices[2].position = sf::Vector2f(posX + 100, posY + 50);
-    vertices[3].position = sf::Vector2f(posX + 100, posY);
+    vertices[0].position = sf::Vector2f(posX - SCREEN_WIDTH / 2 - 50, posY - SCREEN_HEIGHT / 2 - 25);
+    vertices[1].position = sf::Vector2f(posX - SCREEN_WIDTH / 2 - 50, posY + 25 - SCREEN_HEIGHT / 2);
+    vertices[2].position = sf::Vector2f(posX + 50 - SCREEN_WIDTH / 2, posY + 25 - SCREEN_HEIGHT / 2);
+    vertices[3].position = sf::Vector2f(posX + 50 - SCREEN_WIDTH / 2, posY - SCREEN_HEIGHT / 2 - 25);
 }
 
 void ShapeWrapper::transform(const Matrix& t)
